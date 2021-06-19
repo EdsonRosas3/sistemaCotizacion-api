@@ -76,5 +76,11 @@ class PermissionSeeder extends Seeder
         $permiso12->description = "Puede ver los roles existentes y registrar nuevos roles";
         $permiso12->url = "/personal";
         $permiso12->save();
+        
+        $permiso13 = new Permission();
+        $permiso13->namePermission ="Agregar Respuesta";
+        $permiso13->description = "Se puede agregar respuestas de contizacion desde unidad 33cmxfnPK administrariva";
+        $permiso13->url = "/SolicitudesDeAdquisicion";
+        $permiso13->save();
     }
 }

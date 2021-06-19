@@ -21,39 +21,30 @@ class QuoteResponseController extends Controller
     {
         //
     }
-
     /**
-     * Store a newly created resource in storage.
+     * Guarda la cotizaciocion de respuesta que registra la EMPRESA
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        $quotationResponse = $request->only("offerValidity","deliveryTime","paymentMethod","answerDate","observation","company_codes_id");
-        $response['message']="Envio exitoso";
-        $quotation = Quotation::create($quotationResponse);
-        $details = $request->only("detalles");
-        foreach ($details['detalles'] as $key => $detailResponse) {
-            $detailResponse['quotations_id'] = $quotation->id;
-            $detail=Detail::create($detailResponse);
-        } 
-        $idempresa= $request->only("empresaId");
-        if($idempresa['empresaId']==0){
-            $empresa = $request->only("nameEmpresa","email","nit","rubro");
-            $newempresa = Business::create($empresa);
-        }
-        
-        $response['status']=true;
-        
-        return response()->json(["response"=>$response], $this-> successStatus);
-    }
     public function storageQuote(Request $request){
-        $quotationResponse = $request->only("offerValidity","deliveryTime","paymentMethod","answerDate","observation","company_codes_id");
-        $response['message']="Envio exitoso";
-        $quotation = Quotation::create($quotationResponse);
-        $response['id'] = $quotation->id;
-        return response()->json(["response"=>$response], $this-> successStatus);
+        try {
+            $idEmpresa = $request->only("business_id");
+            if ($idEmpresa["business_id"]==0) {
+                $dataEmpresa = $request->only("nameEmpresa","nit","rubro","email");
+                $newEmpresa = Business::create($dataEmpresa);
+                $idEmpresa["business_id"] = $newEmpresa["id"];
+            }
+            $quotationResponse = $request->only("offerValidity","deliveryTime","paymentMethod","answerDate","observation","company_codes_id");
+            $quotationResponse["business_id"] = $idEmpresa["business_id"];
+            $response['message']="Envio exitoso";
+            $quotation = Quotation::create($quotationResponse);
+            $response['id'] = $quotation->id;
+            return response()->json(["response"=>$response], $this-> successStatus);
+        } catch (\Throwable $th) {
+            $response['message']="Algo salio mal por favor informa a la unidad cotizante.";
+            return response()->json(["response"=>$response], $this-> successStatus);
+        }
     }
     public function storageDetails(Request $request,$id){
         $detailResponse = $request->only("unitPrice","totalPrice","request_details_id","brand","industry","model","warrantyTime");
@@ -74,6 +65,75 @@ class QuoteResponseController extends Controller
     
             $name = $id. "-" . $name_File . "." .$extension;
             $file->move(public_path('FilesResponseBusiness/'),$name);
+        }
+       
+        return response()->json(["messaje"=>"Archivos guardados"]);
+    }
+    /**
+     * Guarda la cotizaciocion de respuesta desde la    UNIDAD ADMINISTRATIVA
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function UAstorageQuote(Request $request){
+        try {
+            $idEmpresa = $request->only("idEmpresa");
+            $id = $idEmpresa["idEmpresa"];
+            $empresa = Business::find($id);
+            $input['email']=$empresa->email;
+            $aux = $request->only("request_quotitations_id");
+            $input['request_quotitations_id']=$aux["request_quotitations_id"];
+            $input['code']="No code";
+            $CompanyCode= CompanyCode::create($input);
+            $quotationResponse = $request->only("offerValidity","deliveryTime","paymentMethod","answerDate","observation");
+            $quotationResponse["company_codes_id"]= $CompanyCode->id;
+            $quotationResponse["business_id"] = $id;
+            $response['message']="Envio exitoso";
+            $quotation = Quotation::create($quotationResponse);
+            $response['id'] = $quotation->id;
+            return response()->json(["response"=>$response], $this-> successStatus);
+        } catch (\Throwable $th) {
+            $response['message']="Algo salio mal por favor intente nuevamente.";
+            return response()->json(["response"=>$response], $this-> successStatus);
+        }
+    }
+    public function storageDetailsUA(Request $request,$id){
+        $detailResponse = $request->only("unitPrice","totalPrice","request_details_id","brand","industry","model","warrantyTime");
+        $detailResponse['quotations_id'] = $id;
+        $detail = Detail::create($detailResponse);
+        return response()->json(["response"=>$detail->id], $this-> successStatus);
+    }
+    public function uploadFileUA(Request $request,$id)
+    {
+        $files = $request->file();
+        foreach ($files as $file) {
+            $filename = $file->getClientOriginalName();
+        
+            $filename= pathinfo($filename, PATHINFO_FILENAME);
+            $name_File = str_replace(" ","_",$filename);
+    
+            $extension = $file->getClientOriginalExtension();
+    
+            $name = $id. "-" . $name_File . "." .$extension;
+            $file->move(public_path('FilesResponseBusiness/'),$name);
+        }
+       
+        return response()->json(["messaje"=>"Archivos guardados"]);
+    }
+    public function uploadFileGeneralUA(Request $request,$id)
+    {
+        /**El id es el id de la respuesta guardada */
+        $files = $request->file();
+        foreach ($files as $file) {
+            $filename = $file->getClientOriginalName();
+        
+            $filename= pathinfo($filename, PATHINFO_FILENAME);
+            $name_File = str_replace(" ","_",$filename);
+    
+            $extension = $file->getClientOriginalExtension();
+    
+            $name = $id. "-" . $name_File . "." .$extension;
+            $file->move(public_path('FilesResponseBusinessUA/'),$name);
         }
        
         return response()->json(["messaje"=>"Archivos guardados"]);
@@ -125,11 +185,10 @@ class QuoteResponseController extends Controller
         {
             $idCode = $codeCompany->id; 
             $emailBussi = $codeCompany->email;
-            $quotations = Quotation::all();
+            $quotations = Quotation::where('company_codes_id',$idCode)->get();
+
             foreach($quotations as $key2 => $quotation)
             {
-                if($quotation['company_codes_id'] == $idCode) 
-                {
                     $idQuo = $quotation->id;
                     $empresa = Business::select('businesses.nameEmpresa')
                     ->join('quotations','businesses.id','=','quotations.business_id')
@@ -152,15 +211,65 @@ class QuoteResponseController extends Controller
                     $res['idCotizacion'] = $idQuo;
                     $lista[] = $res;
                     
-        
-                
-                }
             }
         }
 
         return response()->json(['Cotizaciones'=>$lista], $this-> successStatus);
             
     }
+
+    public function comparativeChart($idRe)
+    {
+        $chart = array();
+       $codesCompany = CompanyCode::where('request_quotitations_id',$idRe)->get();
+       $requesDetails = RequestDetail:: select('id','description','amount')->where('request_quotitations_id',$idRe)->get();
+       
+       foreach($requesDetails as $key1 => $reDetail)
+       {
+           $idDe = $reDetail->id;
+           $chart[] = $reDetail;
+           
+            foreach($codesCompany as $key => $codeCompany)
+            {
+                $idQuo = $codeCompany->id; 
+                //$quotations = Quotation::where('company_codes_id',$idCode)->get();
+                //foreach($quotations as $key2 => $quotation)
+               // {
+                   // $idQuo = $quotation->id;
+                    $empresa = Business::select('businesses.nameEmpresa')
+                    ->join('quotations','businesses.id','=','quotations.business_id')
+                    ->where('businesses.id','=',$idQuo)->get();
+                    $empresa2 = $empresa[0];
+                    $nameEmpresa = $empresa2['nameEmpresa'];
+                    $res['Empresa'] =$nameEmpresa;
+
+                    $detail = Detail::select('totalPrice')->where('quotations_id',$idQuo)
+                    ->where('request_details_id',$idDe)->get();
+                    $existDetail = count ($detail);
+
+                    if($existDetail > 0)
+                    {
+                        $total = $detail[0];
+                        $totalPrice = $total['totalPrice'];
+                        $res['total'] = $totalPrice;
+                    }
+                    else
+                    {
+                        $totalPrice = 0;
+                        $res['total'] = $totalPrice;
+                        
+                    }
+                    
+                    $chart[] = $res;
+               // }
+            }
+        }    
+
+        return response()->json(['comparativeChart'=>$chart], $this-> successStatus);
+
+    }
+
+
     /**
      * Update the specified resource in storage.
      *

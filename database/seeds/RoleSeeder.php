@@ -21,7 +21,7 @@ class RoleSeeder extends Seeder
         $role2->nameRol = "Jefe Administrativo";
         $role2->description = "es el encargado de toda la parte de la unidad de administración";
         $role2->save();
-        $role2->permissions()->attach([3,4,5,6,7,12]);
+        $role2->permissions()->attach([3,4,5,6,7,12,13]);
 
         $role3 = new Role();
         $role3->nameRol = "Administrador del Sistema";
