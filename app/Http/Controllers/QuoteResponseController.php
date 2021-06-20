@@ -159,8 +159,10 @@ class QuoteResponseController extends Controller
             $idDetail = $detail->id;
 
             $req = RequestDetail::select('request_details.id','request_details.amount'
-             ,'request_details.unitMeasure','request_details.description','details.unitPrice','details.totalPrice')
-             ->join('details','request_details.id','=','details.request_details_id')
+             ,'request_details.unitMeasure','request_details.description','details.unitPrice','details.totalPrice'
+             ,'details.brand','details.industry','details.model','details.warrantyTime')
+            //$req = RequestDetail::
+            ->join('details','request_details.id','=','details.request_details_id')
              ->where('request_details.id','=',$idDetail)
              ->where('details.quotations_id','=',$idCo)->get();
             $quo[] = $req;
@@ -177,9 +179,6 @@ class QuoteResponseController extends Controller
         //sacar nombres de empresa, numero de items cotizados, el total de todos los items cotizados
         $lista = array();
         $codesCompany = CompanyCode::where('request_quotitations_id',$idReq)->get();
-
-        /*$details = RequestDetail::where('request_quotitations_id',$idReq)->get();
-        $nroDetails = count($details);*/
         
         foreach($codesCompany as $key => $codeCompany)
         {
@@ -220,52 +219,64 @@ class QuoteResponseController extends Controller
 
     public function comparativeChart($idRe)
     {
-        $chart = array();
+       $chart = array();
+       $list = array();
+       $res = array();
+       $res2 = array();
+       $business = array();
+
        $codesCompany = CompanyCode::where('request_quotitations_id',$idRe)->get();
        $requesDetails = RequestDetail:: select('id','description','amount')->where('request_quotitations_id',$idRe)->get();
        
        foreach($requesDetails as $key1 => $reDetail)
        {
            $idDe = $reDetail->id;
-           $chart[] = $reDetail;
+          // $chart[] = $reDetail;
            
             foreach($codesCompany as $key => $codeCompany)
             {
                 $idQuo = $codeCompany->id; 
-                //$quotations = Quotation::where('company_codes_id',$idCode)->get();
-                //foreach($quotations as $key2 => $quotation)
-               // {
-                   // $idQuo = $quotation->id;
-                    $empresa = Business::select('businesses.nameEmpresa')
-                    ->join('quotations','businesses.id','=','quotations.business_id')
-                    ->where('businesses.id','=',$idQuo)->get();
-                    $empresa2 = $empresa[0];
-                    $nameEmpresa = $empresa2['nameEmpresa'];
-                    $res['Empresa'] =$nameEmpresa;
+                $empresa = Business::select('businesses.nameEmpresa')
+                ->join('quotations','businesses.id','=','quotations.business_id')
+                ->where('businesses.id','=',$idQuo)->get();
+                $empresa2 = $empresa[0]; 
+                $nameEmpresa = $empresa2['nameEmpresa'];
+                $list['Empresa'] =$nameEmpresa;
+                $business[] = $nameEmpresa;
 
-                    $detail = Detail::select('totalPrice')->where('quotations_id',$idQuo)
-                    ->where('request_details_id',$idDe)->get();
-                    $existDetail = count ($detail);
+                $detail = Detail::select('totalPrice')->where('quotations_id',$idQuo)
+                ->where('request_details_id',$idDe)->get();
+                $existDetail = count ($detail);
 
-                    if($existDetail > 0)
-                    {
-                        $total = $detail[0];
-                        $totalPrice = $total['totalPrice'];
-                        $res['total'] = $totalPrice;
-                    }
-                    else
-                    {
-                        $totalPrice = 0;
-                        $res['total'] = $totalPrice;
+                if($existDetail > 0)
+                {
+                   $total = $detail[0];
+                   $totalPrice = $total['totalPrice'];
+                   $list['total'] = $totalPrice;
+                }
+                else
+                {
+                    $totalPrice = null;
+                    $list['total'] = $totalPrice;
                         
-                    }
+                }
+                
+                $chart[] = $list;
                     
-                    $chart[] = $res;
-               // }
             }
+            $res2['empresasCotizadas'] = $business;
+            $business = null;
+            $reDetail['cotizaciones'] = $chart;
+            $chart = null;
+            $res[] = $reDetail;
+            
+
+           
         }    
 
-        return response()->json(['comparativeChart'=>$chart], $this-> successStatus);
+        $res[] = $res2;
+
+        return response()->json(['comparativeChart'=>$res], $this-> successStatus);
 
     }
 

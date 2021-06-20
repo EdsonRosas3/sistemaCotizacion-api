@@ -240,13 +240,16 @@ class RequestQuotitationController extends Controller
         return $listDir;
     }
 
-
+//modificar falta
+//id de usuario
     public function getInformation($id)
     {
-        $dates = SpendingUnit::select('spending_units.nameUnidadGasto','users.name','users.lastName')
-        ->join('users','spending_units.id','=','users.spending_units_id')
-        ->where('users.id','=',$id)->get();
-        return response()->json(["User"=> $dates[0]],200);
+        //$dates = SpendingUnit::select('spending_units.nameUnidadGasto','users.name','users.lastName')
+        //->join('users','spending_units.id','=','users.spending_units_id')
+        //->where('users.id','=',$id)->get();
+        $user = ['name'=>'prueba','lastName'=>'prueba2','nameUnidadGasto'=>'pruebaggg'];
+        //return response()->json(["User"=> $dates[0]],200);
+        return response()->json(["User"=> $user],200);
     }
 
 
