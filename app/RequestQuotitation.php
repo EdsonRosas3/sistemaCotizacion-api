@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\RequestDetail; 
 use App\Report; 
+use App\QuoteReport;
 use App\CompanyCode;
 
 class RequestQuotitation extends Model
@@ -30,6 +31,9 @@ class RequestQuotitation extends Model
 
     public function spendingUnits(){
         return $this->belongsTo(SpendingUnit::class);
+    }
+    public function quoteReports(){
+        return $this->hasMany(QuoteReport::class);
     }
     
 

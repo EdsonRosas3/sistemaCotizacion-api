@@ -223,8 +223,6 @@ class QuoteResponseController extends Controller
        $chart = array();
        $list = array();
        $res = array();
-       $res2 = array();
-       $business = array();
 
        $codesCompany = CompanyCode::where('request_quotitations_id',$idRe)->get();
        $requesDetails = RequestDetail:: select('id','description','amount')->where('request_quotitations_id',$idRe)->get();
@@ -243,7 +241,7 @@ class QuoteResponseController extends Controller
                 $empresa2 = $empresa[0]; 
                 $nameEmpresa = $empresa2['nameEmpresa'];
                 $list['Empresa'] =$nameEmpresa;
-                $business[] = $nameEmpresa;
+                
 
                 $detail = Detail::select('totalPrice')->where('quotations_id',$idQuo)
                 ->where('request_details_id',$idDe)->get();
@@ -265,18 +263,13 @@ class QuoteResponseController extends Controller
                 $chart[] = $list;
                     
             }
-            $res2['empresasCotizadas'] = $business;
-            $business = null;
+            
             $reDetail['cotizaciones'] = $chart;
             $chart = null;
             $res[] = $reDetail;
-            
-
-           
         }    
 
-        $res[] = $res2;
-
+        
         return response()->json(['comparativeChart'=>$res], $this-> successStatus);
 
     }

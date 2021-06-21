@@ -111,6 +111,12 @@ Route::group(['middleware' => 'auth:api'], function(){
     /**Devuelve el informe de una solicitud */
     Route::get('quotitation/report/{id}', 'ReportController@show');
 
+    /**QUOTEREPORT CONTROLLER */
+    /**Registra informe de una solicitud */
+    Route::post('quotitation/quoteReport', 'QuoteReportController@store');
+    /**Devuelve el informe de una solicitud */
+    Route::get('quotitation/quoteReport/{id}', 'QuoteReportController@show');
+
     /**EMAIL CONTROLLER */
     /**resive los emails y la descripcion del mensage que se enviara a las empresas o a la empresa
      * y resive el id a la solicitud a la que pertenece*/
