@@ -156,36 +156,29 @@ class QuoteResponseController extends Controller
                                         ->where('request_quotitations_id',$idRe)->get();
         $quo = array();
         $quo = $quote;
-
         foreach ($requestDetail as $key => $detail)
         {
             $idDetail = $detail->id;
-
+            
             $req = RequestDetail::select('request_details.id','request_details.amount'
              ,'request_details.unitMeasure','request_details.description','details.id as idDetail','details.unitPrice','details.totalPrice'
              ,'details.brand','details.industry','details.model','details.warrantyTime')
             ->join('details','request_details.id','=','details.request_details_id')
              ->where('request_details.id','=',$idDetail)
              ->where('details.quotations_id','=',$idCo)->get();
-             $reqdet = $req[0];
-             if($reqdet->brand==null){
-                $reqdet->brand ='';
-             }
-             if($reqdet->industry==null){
-                $reqdet->industry ='';
-             }
-             if($reqdet->model==null){
-                $reqdet->model ='';
-             }
-             if($reqdet->warrantyTime==null){
-                $reqdet->warrantyTime ='';
-             }
             $quo[] = $req;
         }
-
-        return response()->json(['Cotizacion'=>$quo], $this-> successStatus);
-       
-        
+        $responseQuo = array();
+        $responseQuo[] = $quo[0]; //siempre hace refencia no cambiara
+        for ($i=0; $i < count($quo) ; $i++) { 
+            if($i>0){
+                $tamanio = count($quo[$i]);
+                if($tamanio>0){
+                    $responseQuo[] = $quo[$i];
+                }
+            }
+        }
+        return response()->json(['Cotizacion'=>$responseQuo], $this-> successStatus);
     }
 
     public function getQuotes($idReq)
@@ -297,6 +290,24 @@ class QuoteResponseController extends Controller
     public function showNameFilesDetailsBusiness($idDetailOffert)
     { 
         $directory = public_path().'/FilesResponseBusiness'; 
+        $listDir = $this-> dirToArrayOffer($directory,$idDetailOffert);
+        return response()->json($listDir,200);
+    }
+    //muestra el archivo de un detalle de la cotizacion
+    public function showFileBusinessManualUA($namefile){
+        $path = public_path('/FilesResponseBusinessUA\\'.$namefile);
+        return response()->file($path);
+    }
+
+    /**
+     * devuelve los nombres de archivos adjuntos al detalle de la cotizacion (empresa)
+     * segun el id de una cotizacion
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showNameFileBusinessManualUA($idDetailOffert)
+    { 
+        $directory = public_path().'/FilesResponseBusinessUA'; 
         $listDir = $this-> dirToArrayOffer($directory,$idDetailOffert);
         return response()->json($listDir,200);
     }
