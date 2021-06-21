@@ -281,6 +281,12 @@ class QuoteResponseController extends Controller
         return response()->json(['comparativeChart'=>$res], $this-> successStatus);
 
     }
+    
+    //muestra el archivo de un detalle de la cotizacion
+    public function showFilesDetailsBusiness($namefile){
+        $path = public_path('/FilesResponseBusiness\\'.$namefile);
+        return response()->file($path);
+    }
 
     /**
      * devuelve los nombres de archivos adjuntos al detalle de la cotizacion (empresa)
@@ -292,9 +298,7 @@ class QuoteResponseController extends Controller
     { 
         $directory = public_path().'/FilesResponseBusiness'; 
         $listDir = $this-> dirToArrayOffer($directory,$idDetailOffert);
-        //return response()->json($listDir,200);
-        $path = public_path('/FilesResponseBusiness\\'.$listDir[0]);
-        return response()->file($path);
+        return response()->json($listDir,200);
     }
 
      //devuelve un arreglo de archivos de un directorio determinado $dir
