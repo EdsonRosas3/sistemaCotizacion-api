@@ -17,7 +17,8 @@ class RequestQuotationSeeder extends Seeder
         $RequestQuotation->aplicantName="Ricardo Martinez";
         $RequestQuotation->requestDate="2021-01-25";
         $RequestQuotation->amount="9000";
-        $RequestQuotation->status="aceptado";
+        $RequestQuotation->status="Aceptado";
+        $RequestQuotation->statusResponse="En proseso";
         $RequestQuotation->spending_units_id=1;
         $RequestQuotation->administrative_unit_id=1;
         $RequestQuotation->limiteId=1;
@@ -28,7 +29,8 @@ class RequestQuotationSeeder extends Seeder
         $RequestQuotation2->aplicantName="Nicole Mejia";
         $RequestQuotation2->requestDate="2021-01-29";
         $RequestQuotation2->amount="9000";
-        $RequestQuotation2->status="aceptado";
+        $RequestQuotation2->status="Aceptado";
+        $RequestQuotation2->statusResponse="En proseso";
         $RequestQuotation2->spending_units_id=2;
         $RequestQuotation2->administrative_unit_id=3;
         $RequestQuotation2->limiteId=1;
@@ -39,7 +41,8 @@ class RequestQuotationSeeder extends Seeder
         $RequestQuotation3->aplicantName="Juan Carlos Rosas";
         $RequestQuotation3->requestDate="2021-02-15";
         $RequestQuotation3->amount="9000";
-        $RequestQuotation3->status="aceptado";
+        $RequestQuotation3->status="Aceptado";
+        $RequestQuotation3->statusResponse="En proseso";
         $RequestQuotation3->spending_units_id=3;
         $RequestQuotation3->administrative_unit_id=1;
         $RequestQuotation3->limiteId=1;
@@ -50,7 +53,8 @@ class RequestQuotationSeeder extends Seeder
         $RequestQuotation4->aplicantName="Ricardo Martinez";
         $RequestQuotation4->requestDate="2021-04-15";
         $RequestQuotation4->amount="16608";
-        $RequestQuotation4->status="rechazado";
+        $RequestQuotation4->status="Rechazado";
+        $RequestQuotation4->statusResponse="Denegado";
         $RequestQuotation4->spending_units_id=1;
         $RequestQuotation4->administrative_unit_id=1;
         $RequestQuotation4->limiteId=3;
@@ -61,7 +65,8 @@ class RequestQuotationSeeder extends Seeder
         $RequestQuotation5->aplicantName="Nicole Mejia";
         $RequestQuotation5->requestDate="2021-04-26";
         $RequestQuotation5->amount="15000";
-        $RequestQuotation5->status="rechazado";
+        $RequestQuotation5->status="Rechazado";
+        $RequestQuotation5->statusResponse="Denegado";
         $RequestQuotation5->spending_units_id=2;
         $RequestQuotation5->administrative_unit_id=3;
         $RequestQuotation5->limiteId=3;
@@ -72,7 +77,8 @@ class RequestQuotationSeeder extends Seeder
         $RequestQuotation6->aplicantName="Juan Carlos Rosas";
         $RequestQuotation6->requestDate="2021-04-26";
         $RequestQuotation6->amount="14500";
-        $RequestQuotation6->status="rechazado";
+        $RequestQuotation6->status="Rechazado";
+        $RequestQuotation6->statusResponse="Denegado";
         $RequestQuotation6->spending_units_id=3;
         $RequestQuotation6->administrative_unit_id=1;
         $RequestQuotation6->limiteId=3;
@@ -83,7 +89,8 @@ class RequestQuotationSeeder extends Seeder
         $RequestQuotation7->aplicantName="Ricardo Martinez";
         $RequestQuotation7->requestDate="2021-05-01";
         $RequestQuotation7->amount="21200";
-        $RequestQuotation7->status="pendiente";
+        $RequestQuotation7->status="Pendiente";
+        $RequestQuotation7->statusResponse="Pendiente";
         $RequestQuotation7->spending_units_id=1;
         $RequestQuotation7->administrative_unit_id=1;
         $RequestQuotation7->limiteId=4;
@@ -94,7 +101,8 @@ class RequestQuotationSeeder extends Seeder
         $RequestQuotation8->aplicantName="Ricardo Martinez";
         $RequestQuotation8->requestDate="2021-05-09";
         $RequestQuotation8->amount="19500";
-        $RequestQuotation8->status="pendiente";
+        $RequestQuotation8->status="Pendiente";
+        $RequestQuotation8->statusResponse="Pendiente";
         $RequestQuotation8->spending_units_id=1;
         $RequestQuotation8->administrative_unit_id=1;
         $RequestQuotation8->limiteId=4;

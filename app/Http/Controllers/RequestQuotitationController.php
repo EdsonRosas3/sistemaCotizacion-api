@@ -37,7 +37,7 @@ class RequestQuotitationController extends Controller
      */
     public function showRequestQuotationGasto($id)
     {
-        $requestQuotitationsGasto = RequestQuotitation::select("id","nameUnidadGasto","requestDate","status","spending_units_id")->where('spending_units_id','=',$id)->get();
+        $requestQuotitationsGasto = RequestQuotitation::select("id","nameUnidadGasto","requestDate","status","statusResponse","spending_units_id")->where('spending_units_id','=',$id)->get();
         foreach ($requestQuotitationsGasto as $key => $requestQuotitation) {
             $id_requestQuotitation = $requestQuotitation['id'];
             //busca si el id de esta solicitud tiene un informe
@@ -60,7 +60,7 @@ class RequestQuotitationController extends Controller
      */
     public function showRequestQuotationAdministrative($id)
     {
-        $requestQuotitationsAdmin = RequestQuotitation::select("id","nameUnidadGasto","requestDate","status","administrative_unit_id")->where('administrative_unit_id','=',$id)->get();
+        $requestQuotitationsAdmin = RequestQuotitation::select("id","nameUnidadGasto","requestDate","status","statusResponse","administrative_unit_id")->where('administrative_unit_id','=',$id)->get();
         foreach ($requestQuotitationsAdmin as $key => $requestQuotitation) {
             $id_requestQuotitation = $requestQuotitation['id'];
             //busca si el id de esta solicitud tiene un informe
@@ -201,6 +201,12 @@ class RequestQuotitationController extends Controller
     {
         $status = $request->only('status');
         $requestQuotitation = RequestQuotitation::find($id);
+        if($status['status']=='Aceptado'){
+            $requestQuotitation['statusResponse'] = 'Em proceso';
+        }
+        if($status['status']=='Rechazado'){
+            $requestQuotitation['statusResponse'] = 'Denegado';
+        }
         $requestQuotitation['status'] = $status['status'];
         $requestQuotitation->update();
         return response()->json($requestQuotitation,200);

@@ -42,7 +42,7 @@ class ReportController extends Controller
         if ($validator->fails()) { 
             return response()->json(['error'=>$validator->errors()], 401);            
         }
-
+        $idRequest = $request->only('request_quotitations_id');
         $reportFound = Report::where('request_quotitations_id',$request['request_quotitations_id'])->get();
         $valor = count($reportFound);
         //devuelve mensaje si la solicitud ya tiene un informe
@@ -53,6 +53,10 @@ class ReportController extends Controller
 
         $input = $request->all();
         $report = Report::create($input);
+        //finalinalizar cotizacion
+        $requestQuotitation = RequestQuotitation::find($idRequest['request_quotitations_id']);
+        $requestQuotitation['statusResponse'] = 'Finalizado';
+        $requestQuotitation->update();
         return response()->json(['message'=> "Envio exitoso"], $this-> successStatus);
     }
 

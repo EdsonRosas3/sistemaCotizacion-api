@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facade\File;
+use Illuminate\Support\Facades\Storage;
 use App\Quotation;
 use App\Detail;
 use App\RequestDetail;
@@ -139,7 +141,7 @@ class QuoteResponseController extends Controller
         return response()->json(["messaje"=>"Archivos guardados"]);
     }
     /**
-     * Display the specified resource.
+     * Devuelve todos los datos de una cotizacion
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -159,9 +161,8 @@ class QuoteResponseController extends Controller
             $idDetail = $detail->id;
 
             $req = RequestDetail::select('request_details.id','request_details.amount'
-             ,'request_details.unitMeasure','request_details.description','details.unitPrice','details.totalPrice'
+             ,'request_details.unitMeasure','request_details.description','details.id as idDetail','details.unitPrice','details.totalPrice'
              ,'details.brand','details.industry','details.model','details.warrantyTime')
-            //$req = RequestDetail::
             ->join('details','request_details.id','=','details.request_details_id')
              ->where('request_details.id','=',$idDetail)
              ->where('details.quotations_id','=',$idCo)->get();
@@ -279,7 +280,46 @@ class QuoteResponseController extends Controller
         return response()->json(['comparativeChart'=>$res], $this-> successStatus);
 
     }
+    
+    //muestra el archivo de un detalle de la cotizacion
+    public function showFilesDetailsBusiness($namefile){
+        $path = public_path('/FilesResponseBusiness\\'.$namefile);
+        return response()->file($path);
+    }
 
+    /**
+     * devuelve los nombres de archivos adjuntos al detalle de la cotizacion (empresa)
+     * segun el id de una cotizacion
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showNameFilesDetailsBusiness($idDetailOffert)
+    { 
+        $directory = public_path().'/FilesResponseBusiness'; 
+        $listDir = $this-> dirToArrayOffer($directory,$idDetailOffert);
+        return response()->json($listDir,200);
+    }
+
+     //devuelve un arreglo de archivos de un directorio determinado $dir
+     public function dirToArrayOffer($dir,$idOffer) {
+        $listDir = array();
+        if($handler = opendir($dir)) {
+            while (($file = readdir($handler)) !== FALSE) {
+                $numberDigitosIdOffer = strlen($idOffer);
+                $stringNumberOffert = substr($file,0,$numberDigitosIdOffer);
+                //para ubicar los archivos que empiezen con el numero del detalle de la cotizacion 
+                if ($file != "." && $file != ".." && $stringNumberOffert==$idOffer) {
+                    if(is_file($dir."/".$file)) {
+                        $listDir[] = $file;
+                    }elseif(is_dir($dir."/".$file)){
+                        $listDir[$file] = $this->dirToArray ($dir."/".$file);
+                    }
+                }
+            }
+            closedir($handler);
+        }
+        return $listDir;
+    }
 
     /**
      * Update the specified resource in storage.

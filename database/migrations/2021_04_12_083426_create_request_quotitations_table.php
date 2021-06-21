@@ -19,7 +19,8 @@ class CreateRequestQuotitationsTable extends Migration
             $table->string('aplicantName');
             $table->date('requestDate');
             $table->integer('amount');
-            $table->string('status')->nullable()->default('pendiente');
+            $table->string('status')->nullable()->default('Pendiente');
+            $table->string('statusResponse')->nullable()->default('Pendiente');
             $table->foreignId('spending_units_id')->nullable()->constrained();
             $table->integer('administrative_unit_id');
             $table->integer('limiteId')->nullable();
