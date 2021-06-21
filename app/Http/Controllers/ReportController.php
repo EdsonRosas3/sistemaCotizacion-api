@@ -53,10 +53,7 @@ class ReportController extends Controller
 
         $input = $request->all();
         $report = Report::create($input);
-        //finalinalizar cotizacion
-        $requestQuotitation = RequestQuotitation::find($idRequest['request_quotitations_id']);
-        $requestQuotitation['statusResponse'] = 'Finalizado';
-        $requestQuotitation->update();
+
         return response()->json(['message'=> "Envio exitoso"], $this-> successStatus);
     }
 

@@ -49,10 +49,9 @@ Route::get('files/{id}', 'RequestQuotitationController@showFiles');
 Route::get('requestquotitationpdf/{id}','PDFQuotitationController@requestquotitationPDF');
 
 /*ARCHIVOS DE COTIZACION */
-/**nombre de archivo del detalle de una cotizacion */
+/**Devuelve el file por ID*/
 Route::get('quotation/files/detail/{idDetailOffert}', 'QuoteResponseController@showNameFilesDetailsBusiness');
-/**muestra el archivo del detalle de una cotizacion*/ //no tiene un servicio en frontend
-Route::get("quotation/showFiles/detail/{namefile}", "QuoteResponseController@showFilesDetailsBusiness");
+
 
 /**Dentro de este grupo de rutas solo podran acceder si han iniciado sesion por lo tanto tiene que 
  * pasar el token para poder usar las rutas dentro del grupo
