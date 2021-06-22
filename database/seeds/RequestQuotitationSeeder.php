@@ -18,7 +18,7 @@ class RequestQuotationSeeder extends Seeder
         $RequestQuotation->requestDate="2021-01-25";
         $RequestQuotation->amount="9000";
         $RequestQuotation->status="Aceptado";
-        $RequestQuotation->statusResponse="En proseso";
+        $RequestQuotation->statusResponse="En proceso";
         $RequestQuotation->spending_units_id=1;
         $RequestQuotation->administrative_unit_id=1;
         $RequestQuotation->limiteId=1;
@@ -30,7 +30,7 @@ class RequestQuotationSeeder extends Seeder
         $RequestQuotation2->requestDate="2021-01-29";
         $RequestQuotation2->amount="9000";
         $RequestQuotation2->status="Aceptado";
-        $RequestQuotation2->statusResponse="En proseso";
+        $RequestQuotation2->statusResponse="En proceso";
         $RequestQuotation2->spending_units_id=2;
         $RequestQuotation2->administrative_unit_id=3;
         $RequestQuotation2->limiteId=1;
@@ -42,7 +42,7 @@ class RequestQuotationSeeder extends Seeder
         $RequestQuotation3->requestDate="2021-02-15";
         $RequestQuotation3->amount="9000";
         $RequestQuotation3->status="Aceptado";
-        $RequestQuotation3->statusResponse="En proseso";
+        $RequestQuotation3->statusResponse="En proceso";
         $RequestQuotation3->spending_units_id=3;
         $RequestQuotation3->administrative_unit_id=1;
         $RequestQuotation3->limiteId=1;

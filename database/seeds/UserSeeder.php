@@ -100,7 +100,7 @@ class UserSeeder extends Seeder
         $user->password=bcrypt("diego");
         $user->save();
         //usuario con rol jefe administrativo sin unidad
-        $user->roles()->attach(2);
+        $user->roles()->attach(2,['administrative_unit_id'=>4,'administrative_unit_status'=>1]);
 
         $user = new User();
         $user->name = "Valeria";
@@ -113,6 +113,6 @@ class UserSeeder extends Seeder
         $user->password=bcrypt("valeria");
         $user->save();
         //usuario con rol jefe de gasto sin unidad
-        $user->roles()->attach(1);
+        $user->roles()->attach(1,['spending_unit_id'=>4,'spending_unit_status'=>1]);
     }
 }

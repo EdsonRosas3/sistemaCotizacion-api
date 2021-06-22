@@ -202,7 +202,7 @@ class RequestQuotitationController extends Controller
         $status = $request->only('status');
         $requestQuotitation = RequestQuotitation::find($id);
         if($status['status']=='Aceptado'){
-            $requestQuotitation['statusResponse'] = 'Em proceso';
+            $requestQuotitation['statusResponse'] = 'En proceso';
         }
         if($status['status']=='Rechazado'){
             $requestQuotitation['statusResponse'] = 'Denegado';
