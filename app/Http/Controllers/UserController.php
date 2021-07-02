@@ -156,7 +156,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::select('id','name','lastName','ci','phone','email')->get();
+        $users = User::select('id','name','lastName','ci','phone','email','direction','userName')->get();
         foreach ($users as $key =>$user)
         {
              $rolesactindexall = $user->roles()
