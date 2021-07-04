@@ -77,6 +77,19 @@ class UserSeeder extends Seeder
         $user->save();
         $user->roles()->attach(1,['spending_unit_id'=>2,'spending_unit_status'=>1]);
 
+         //jefe de la unidad de gasto 3
+         $user = new User();
+         $user->name = "Juan Carlos";
+         $user->lastName="Rosas";
+         $user->phone="70886471";
+         $user->direction="Avenida Peru y Tadeo Haenke";
+         $user->ci="8126788";
+         $user->email="juan10@gmail.com";
+         $user->userName="juan";
+         $user->password=bcrypt("juan");
+         $user->save();
+         $user->roles()->attach(1,['spending_unit_id'=>3,'spending_unit_status'=>1]);
+ 
         //usuario con rol jefe de uniadad administrativa sin unidad
         $user = new User();
         $user->name = "Diego";

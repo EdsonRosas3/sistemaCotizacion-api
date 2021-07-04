@@ -185,7 +185,7 @@ class UserController extends Controller
                     $user['userRol'] = $rold['nameRol'];
                  }
                  if($valor==0 ){
-                    $user['userRol'] = '';
+                    $user['userRol'] = 'Seleccionar rol';
                  }
              }
              $users[$key] = $user;
