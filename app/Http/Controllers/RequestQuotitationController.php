@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facade\File;
-use App\RequestQuotitation; 
-use App\RequestDetail; 
+use App\RequestQuotitation;
+use App\RequestDetail;
 use App\User;
 use App\SpendingUnit;
 use App\LimiteAmount;
@@ -77,24 +77,24 @@ class RequestQuotitationController extends Controller
         return response()->json(['request_quotitations'=>$requestQuotitationsAdmin],200);
     }
     /**
-     * resive un solicitud para poder crear una nueva solictud 
+     * resive un solicitud para poder crear una nueva solictud
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {   
+    {
         $input = $request->only('nameUnidadGasto', 'aplicantName','requestDate','amount','spending_units_id');
         $arrayDetails = $request->only('details');
         $arrayDetails=$arrayDetails['details'];
-        $validator = Validator::make($request->all(), [ 
-            'nameUnidadGasto' => 'required', 
-            'aplicantName' => 'required', 
-            'requestDate' => 'required', 
-            'amount' => 'required', 
+        $validator = Validator::make($request->all(), [
+            'nameUnidadGasto' => 'required',
+            'aplicantName' => 'required',
+            'requestDate' => 'required',
+            'amount' => 'required',
             ]);
-            if ($validator->fails()) { 
-                return response()->json(['error'=>$validator->errors()], 401);            
+            if ($validator->fails()) {
+                return response()->json(['error'=>$validator->errors()], 401);
             }
             //$idGasto = $request->only('spending_units_id');
         $idGasto = $input['spending_units_id'];
@@ -115,11 +115,11 @@ class RequestQuotitationController extends Controller
              $detailI['request_quotitations_id']= $idQuotitation;
              RequestDetail::create($detailI);
          }
-         
+
          return response()->json(['success' =>$idQuotitation], $this-> successStatus);
     }
     /* public function saveFile($files , $datas){
-        
+
         return;
     } */
 
@@ -129,10 +129,10 @@ class RequestQuotitationController extends Controller
     }
 
     public function uploadOne(Request $req,$id){
-        
+
         $result = $req->file('file')->store('Archivos');
         return ["result"=>$result];
-    } 
+    }
     public function download(Request $req){
         $path = storage_path('app\Archivos\KEr48AL1e7QHtSmq3CMhysAQK53FJvm0DpVJcROm.pdf');
         return response()->download($path);
@@ -144,16 +144,16 @@ class RequestQuotitationController extends Controller
         $files = $request->file();
         foreach ($files as $file) {
             $filename = $file->getClientOriginalName();
-        
+
             $filename= pathinfo($filename, PATHINFO_FILENAME);
             $name_File = str_replace(" ","_",$filename);
-    
+
             $extension = $file->getClientOriginalExtension();
-    
+
             $name = date('His') . "-" . $name_File . "." .$extension;
             $file->move(public_path('FilesAquisicion/'.$id),$name);
         }
-       
+
         return response()->json(["messaje"=>"Archivos guardados"]);
     }
     public function fileDowload(){
@@ -177,7 +177,7 @@ class RequestQuotitationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {  
+    {
         //devuelve datos y detalles de una solicitud
         $requestQuotitations = RequestQuotitation::all();
         $deils = RequestDetail::where('request_quotitations_id',$id)->get();
@@ -227,7 +227,7 @@ class RequestQuotitationController extends Controller
         return response()->json($listDir,200);
     }
 
-    
+
     //devuelve un arreglo de archivos de un directorio determinado $dir
     public function dirToArray($dir) {
         $listDir = array();
@@ -281,4 +281,56 @@ class RequestQuotitationController extends Controller
     {
         //
     }
+
+    /**
+     * devuelve las solicitudes por pagina asociadas a una unidad administrativa
+     */
+    public function showRequestQuotationAdministrativePage($id)
+    {
+        $request = RequestQuotitation::query()->select("id","nameUnidadGasto","requestDate","status","statusResponse","administrative_unit_id")->where('administrative_unit_id','=',$id)->orderByDesc('id')->paginate(10);
+
+        $requestQuotitationsAdmin = $request;
+        foreach ($requestQuotitationsAdmin as $key => $requestQuotitation) {
+            $id_requestQuotitation = $requestQuotitation['id'];
+            //busca si el id de esta solicitud tiene un informe
+            $report = Report::where('request_quotitations_id',$id_requestQuotitation)->get();
+            $countReport = count($report);
+            if($countReport == 1){
+                $requestQuotitation['statusReport'] = true;
+            }
+            else{
+                $requestQuotitation['statusReport'] = false;
+            }
+            $requestQuotitationsAdmin[$key] = $requestQuotitation;
+        }
+
+        return response($requestQuotitationsAdmin,200);
+    }
+
+    /**
+     * devuelve las solicitudes por pagina asociadas a una unidad de gasto
+     */
+    public function showRequestQuotationGastoPage($id)
+    {
+        $request = RequestQuotitation::query()->select("id","nameUnidadGasto","requestDate","status","statusResponse","spending_units_id")->where('spending_units_id','=',$id)->orderByDesc('id')->paginate(10);
+
+        $requestQuotitationsGasto = $request;
+        foreach ($requestQuotitationsGasto as $key => $requestQuotitation) {
+            $id_requestQuotitation = $requestQuotitation['id'];
+            //busca si el id de esta solicitud tiene un informe
+            $report = Report::where('request_quotitations_id',$id_requestQuotitation)->get();
+            $countReport = count($report);
+            if($countReport == 1){
+                $requestQuotitation['statusReport'] = true;
+            }
+            else{
+                $requestQuotitation['statusReport'] = false;
+            }
+            $requestQuotitationsGasto[$key] = $requestQuotitation;
+        }
+
+        return response($requestQuotitationsGasto,200);
+    }
+
+
 }

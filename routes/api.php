@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RequestQuotitationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -59,7 +60,13 @@ Route::get('ua/quotation/files/detail/{idDetailOffert}', 'QuoteResponseControlle
 /**muestra el archivo de contizacion manual*/ //no tiene un servicio en frontend
 Route::get("ua/quotation/showFiles/detail/{namefile}", "QuoteResponseController@showFileBusinessManualUA");
 
-/**Dentro de este grupo de rutas solo podran acceder si han iniciado sesion por lo tanto tiene que 
+/**devuelvelas solicitides por pagina asociadas a una unidad administrativa */
+Route::get('Request/page/{id}','RequestQuotitationController@showRequestQuotationAdministrativePage');
+
+/**devuelvelas solicitides por pagina asociadas a una unidad de gasto */
+Route::get('Request/spending/page/{id}','RequestQuotitationController@showRequestQuotationGastoPage');
+
+/**Dentro de este grupo de rutas solo podran acceder si han iniciado sesion por lo tanto tiene que
  * pasar el token para poder usar las rutas dentro del grupo
  */
 Route::group(['middleware' => 'auth:api'], function(){
@@ -98,7 +105,7 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::get('quotitations/spending/{id}', 'RequestQuotitationController@showRequestQuotationGasto');
     /**Devuelve todas las solicitudes que perteneces a esa unidad administrativa */
     Route::get('quotitations/{id}', 'RequestQuotitationController@showRequestQuotationAdministrative');
-    /**recibe un id de solitud de adquicion y responde con los detalles que perteneces a esa solicitud, 
+    /**recibe un id de solitud de adquicion y responde con los detalles que perteneces a esa solicitud,
      * mas un campo que guarda el mensaje de si el monto estimado es superior al monto limite*/
     Route::get('quotitation/{id}', 'RequestQuotitationController@show');
 
@@ -109,6 +116,12 @@ Route::group(['middleware' => 'auth:api'], function(){
     /*recive los archivos para guardar */
     Route::post('upload/{id}', 'RequestQuotitationController@uploadFile');
     Route::get('download', 'RequestQuotitationController@download');
+
+    /**devuelvelas solicitides por pagina asociadas a una unidad administrativa */
+    Route::get('Request/page/{id}','RequestQuotitationController@showRequestQuotationAdministrativePage');
+
+    /**devuelvelas solicitides por pagina asociadas a una unidad de gasto */
+    Route::get('Request/spending/page/{id}','RequestQuotitationController@showRequestQuotationGastoPage');
 
     /**REPORT CONTROLLER */
     /**Registra informe de una solicitud */
@@ -162,7 +175,7 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::get('faculties/use','FacultyController@noUseFaculties');
     // Devuelve solo las facultades que si estan asignadas a una unidad administrativa
     Route::get('faculties/in/use','FacultyController@inUseFaculties');
-    //Crea una nueva facultad 
+    //Crea una nueva facultad
     Route::post('facultad/new','FacultyController@store');
 
     /**ADMINISTRATIVE UNIT CONTROLLER */
@@ -206,5 +219,5 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::post("ua/quotitacion/response/file/{id}","QuoteResponseController@uploadFileUA");
     /**registra la Respuesta de cotizacion de la empresa desde la unidad administrativa*/
     Route::post("ua/quotitacion/response/file/uageneral/{id}","QuoteResponseController@uploadFileGeneralUA");
-    
+
 });
