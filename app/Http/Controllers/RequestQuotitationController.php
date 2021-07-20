@@ -285,11 +285,17 @@ class RequestQuotitationController extends Controller
     /**
      * devuelve las solicitudes por pagina asociadas a una unidad administrativa
      */
-    public function showRequestQuotationAdministrativePage($id)
+    public function showRequestQuotationAdministrativePage(Request $request,$id)
     {
-        $request = RequestQuotitation::query()->select("id","nameUnidadGasto","requestDate","status","statusResponse","administrative_unit_id")->where('administrative_unit_id','=',$id)->orderByDesc('id')->paginate(10);
+        $aux=['administrative_unit_id'=>$id];
 
-        $requestQuotitationsAdmin = $request;
+        $input = $request->only('status');
+
+        if($input['status']!==null){
+            $aux['status']=$input['status'];
+        }
+
+        $requestQuotitationsAdmin = RequestQuotitation::query()->select("id","nameUnidadGasto","requestDate","status","statusResponse","administrative_unit_id")->where($aux)->orderByDesc('id')->paginate(10);
         foreach ($requestQuotitationsAdmin as $key => $requestQuotitation) {
             $id_requestQuotitation = $requestQuotitation['id'];
             //busca si el id de esta solicitud tiene un informe
@@ -310,11 +316,18 @@ class RequestQuotitationController extends Controller
     /**
      * devuelve las solicitudes por pagina asociadas a una unidad de gasto
      */
-    public function showRequestQuotationGastoPage($id)
+    public function showRequestQuotationGastoPage(Request $request,$id)
     {
-        $request = RequestQuotitation::query()->select("id","nameUnidadGasto","requestDate","status","statusResponse","spending_units_id")->where('spending_units_id','=',$id)->orderByDesc('id')->paginate(10);
+        $aux=['spending_units_id'=>$id];
 
-        $requestQuotitationsGasto = $request;
+        $input = $request->only('status');
+
+        if($input['status']!==null){
+            $aux['status']=$input['status'];
+        }
+
+        $requestQuotitationsGasto = RequestQuotitation::query()->select("id","nameUnidadGasto","requestDate","status","statusResponse","spending_units_id")->where($aux)->orderByDesc('id')->paginate(10);
+
         foreach ($requestQuotitationsGasto as $key => $requestQuotitation) {
             $id_requestQuotitation = $requestQuotitation['id'];
             //busca si el id de esta solicitud tiene un informe
