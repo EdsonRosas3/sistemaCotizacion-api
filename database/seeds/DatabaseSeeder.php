@@ -25,5 +25,8 @@ class DatabaseSeeder extends Seeder
         $this->call(RequestDetailSeeder::class);
         $this->call(ReportSeeder::class);
         $this->call(BusinessSeeder::class);
+        $this->call(CompanyCodeSeeder::class);
+        $this->call(QuotationSeeder::class);
+        $this->call(DetailsSeeder::class);
     }
 }
