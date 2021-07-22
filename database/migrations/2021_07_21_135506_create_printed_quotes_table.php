@@ -16,7 +16,7 @@ class CreatePrintedQuotesTable extends Migration
         Schema::create('printed_quotes', function (Blueprint $table) {
             $table->id();
             $table->integer('idQuotation');
-            $table->string("business")->nullable();
+            $table->string("email")->nullable();
             $table->foreignId('request_quotitations_id')->constrained();
             $table->timestamps();
         });

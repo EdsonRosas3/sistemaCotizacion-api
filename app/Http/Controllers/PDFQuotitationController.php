@@ -23,6 +23,7 @@ class PDFQuotitationController extends Controller
         //recibe:
         //request_quotitations_id
         //business (nombre de la empresa)
+        //email
         $id = $request->only('request_quotitations_id');
         $idAdministrative = RequestQuotitation::where('id',$id)->pluck('administrative_unit_id')->first();
         $idFacultad = AdministrativeUnit::where('id',$idAdministrative)->pluck('faculties_id')->first();
@@ -59,9 +60,10 @@ class PDFQuotitationController extends Controller
             }
         }
         $empresa=$request->business;
+        $email =$request->email;
         //enviar datos al pdf
         if($empresa!=null){
-            $requestPrintedQuote = ['idQuotation'=>$codQuotation,'business'=>$request->business,'request_quotitations_id'=>$request->request_quotitations_id];
+            $requestPrintedQuote = ['idQuotation'=>$codQuotation,'email'=>$email,'request_quotitations_id'=>$request->request_quotitations_id];
             $printedQuote = PrintedQuote::create($requestPrintedQuote);
             $data=[
                 'details'=>$details,

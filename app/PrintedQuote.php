@@ -14,7 +14,7 @@ class PrintedQuote extends Model
      * @var array
      */
     protected $fillable = [
-        'idQuotation','business','request_quotitations_id'
+        'idQuotation','email','request_quotitations_id'
     ];
     public function requestQuotitation(){
         return $this->belongsTo(RequestQuotitation::class);
