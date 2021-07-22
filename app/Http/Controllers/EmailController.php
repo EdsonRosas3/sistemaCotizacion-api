@@ -34,7 +34,7 @@ class EmailController extends Controller
             $input['request_quotitations_id']=$id;
             $input['code']=substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 6);
             $request['code']=$input['code'];
-            $request['link']="http://127.0.0.1:3000/ingresoCodigo";
+            $request['link']="http://devsociety.tis.cs.umss.edu.bo/ingresoCodigo";
             //crear codigo de solicitud de cotizacion
             $codQuotation=0;
             $lastPrintedQuote = PrintedQuote::pluck('idQuotation')->last();
@@ -62,7 +62,7 @@ class EmailController extends Controller
             }
             $input['idQuotation']=$codQuotation;
             CompanyCode::create($input);
-            //Mail::to($email)->send(new EmailModel($request));
+            Mail::to($email)->send(new EmailModel($request));
             }
             return response()->json(['result'=>"El mensaje ha sido enviado exitosamente!"],200); 
     }
