@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCompanyCodesTable extends Migration
+class CreatePrintedQuotesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreateCompanyCodesTable extends Migration
      */
     public function up()
     {
-        Schema::create('company_codes', function (Blueprint $table) {
+        Schema::create('printed_quotes', function (Blueprint $table) {
             $table->id();
             $table->integer('idQuotation');
-            $table->string("code");
-            $table->string("email");
+            $table->string("email")->nullable();
             $table->foreignId('request_quotitations_id')->constrained();
             $table->timestamps();
         });
@@ -30,6 +29,6 @@ class CreateCompanyCodesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('company_codes');
+        Schema::dropIfExists('printed_quotes');
     }
 }

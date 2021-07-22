@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\CompanyCode;
+use App\PrintedQuote;
 use App\Detail;
 class Quotation extends Model
 {
@@ -13,10 +14,13 @@ class Quotation extends Model
      * @var array
      */
     protected $fillable = [
-        'offerValidity','deliveryTime','paymentMethod','answerDate','observation','company_codes_id','business_id'
+        'offerValidity','deliveryTime','paymentMethod','answerDate','observation','company_codes_id','printed_quotes_id','business_id'
     ];
     public function companyCode(){
         return $this->belongsTo(CompanyCode::class);
+    }
+    public function printedQuote(){
+        return $this->belongsTo(PrintedQuote::class);
     }
     public function details(){
         return $this->hasMany(Detail::class);

@@ -10,6 +10,7 @@ use App\Detail;
 use App\RequestDetail;
 use App\Business;
 use App\CompanyCode;
+use App\PrintedQuote;
 
 class QuoteResponseController extends Controller
 {
@@ -48,12 +49,14 @@ class QuoteResponseController extends Controller
             return response()->json(["response"=>$response], $this-> successStatus);
         }
     }
+
     public function storageDetails(Request $request,$id){
         $detailResponse = $request->only("unitPrice","totalPrice","request_details_id","brand","industry","model","warrantyTime");
         $detailResponse['quotations_id'] = $id;
         $detail=Detail::create($detailResponse);
         return response()->json(["response"=>$detail->id], $this-> successStatus);
     }
+
     public function uploadFile(Request $request,$id)
     {
         $files = $request->file();
@@ -72,23 +75,20 @@ class QuoteResponseController extends Controller
         return response()->json(["messaje"=>"Archivos guardados"]);
     }
     /**
-     * Guarda la cotizaciocion de respuesta desde la    UNIDAD ADMINISTRATIVA
+     * Guarda la cotizaciocion de respuesta desde la  UNIDAD ADMINISTRATIVA
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function UAstorageQuote(Request $request){
         try {
+            //idQuotation
             $idEmpresa = $request->only("idEmpresa");
             $id = $idEmpresa["idEmpresa"];
-            $empresa = Business::find($id);
-            $input['email']=$empresa->email;
-            $aux = $request->only("request_quotitations_id");
-            $input['request_quotitations_id']=$aux["request_quotitations_id"];
-            $input['code']="No code";
-            $CompanyCode= CompanyCode::create($input);
             $quotationResponse = $request->only("offerValidity","deliveryTime","paymentMethod","answerDate","observation");
-            $quotationResponse["company_codes_id"]= $CompanyCode->id;
+            $codePrintedQuote=  $request->idQuotation;
+            $printedQuote = PrintedQuote::where('idQuotation',$codePrintedQuote)->first();
+            $quotationResponse["printed_quotes_id"]=  $printedQuote->id;
             $quotationResponse["business_id"] = $id;
             $response['message']="Envio exitoso";
             $quotation = Quotation::create($quotationResponse);
@@ -119,8 +119,7 @@ class QuoteResponseController extends Controller
             $name = $id. "-" . $name_File . "." .$extension;
             $file->move(public_path('FilesResponseBusiness/'),$name);
         }
-        return response()->json(["message"=>"se guardo el archivo"]);
-        //return response()->json(["messaje"=>"Archivos guardados"]);
+        return response()->json(["message"=>"se guardo el archivo"]);;
     }
     public function uploadFileGeneralUA(Request $request,$id)
     {
@@ -331,6 +330,29 @@ class QuoteResponseController extends Controller
             closedir($handler);
         }
         return $listDir;
+    }
+
+    /**
+     * devuelve los codigos sin respuesta de las cotizaciones impresas 
+     * segun el id de una solicitud de adquisicion
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showCodesQuotationUA($idRequest)
+    { 
+        $codesPrintedQuotes = PrintedQuote::select('id','idQuotation')
+                                        ->where('request_quotitations_id',$idRequest)->get();
+        $codesQuotesWithoutResponse = array();
+        foreach ($codesPrintedQuotes as $key => $code){
+            $idPrintedQuote = $code->id;
+            $idQuotation = $code->idQuotation;
+            $quotation = Quotation::where('printed_quotes_id',$idPrintedQuote)->get();
+            $quotationFound = count($quotation);
+            if($quotationFound==0){
+                array_push($codesQuotesWithoutResponse,$idQuotation);
+            }
+        }                           ;
+        return response()->json($codesQuotesWithoutResponse,200);
     }
 
     /**

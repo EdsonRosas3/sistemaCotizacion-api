@@ -133,15 +133,15 @@ th {
     <div class="container">
         <header>
             <div class="contenido">
-                <div class="izquierda title-left">universidad mayor de sam simón facultad de {{$facultad->nameFacultad}} aquisiciones</div>
-              </div>
-              <div class="text-right"><p>Cochabamba-Bolivia</p><span style="color:red">Nº 000005</span></div>
-            <h5 class="title">SOLICITUD DE COTIZACIÓN</h5>
+                <div class="izquierda title-left">universidad mayor de san simón facultad de {{$facultad->nameFacultad}} adquisiciones</div>
+                <div class="text-right"><p>Cochabamba-Bolivia</p></div>
+            </div>
+            <h5 class="title">SOLICITUD DE COTIZACIÓN <span style="color:red">  Nº {{$codigo}}</span></h5>
         </header>
         <main class="principal">
             <div class="razon-social">
-                <p>Razón social:..............................................</p>
-                <p class="fecha-derecha">Fecha: {{$fecha=date("d")."/".date("m")."/".date("Y")}} </p>
+                <p class="empresa-izquierda">Razón social: {{$empresa}}</p>
+                <p class="fecha-derecha">Fecha de emision: {{$fecha=date("d")."/".date("m")."/".date("Y")}} </p>
                 <p class="bajar">Agradecemos a Uds. cotizamos, los articulos que a continuación se detallan. Luego de este formulario debe devolverse en sobre cerrado debidamente FIRMADO Y SELLADO (Favor especificar Marca, Modelo, Industria).</p>
             </div>
             <table class="table table-sm table-bordered text-center">

@@ -20,7 +20,8 @@ class CreateQuotationsTable extends Migration
             $table->date('answerDate');//fecha de respuesta
             $table->string('paymentMethod'); //metodo de pago
             $table->string('observation')->nullable();
-            $table->foreignId('company_codes_id')->constrained();
+            $table->foreignId('company_codes_id')->nullable()->constrained();
+            $table->foreignId('printed_quotes_id')->nullable()->constrained();
             $table->foreignId('business_id')->constrained();
             $table->timestamps();
         });
