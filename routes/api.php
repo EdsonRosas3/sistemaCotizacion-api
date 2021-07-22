@@ -32,6 +32,9 @@ Route::post("quotitacion/response","QuoteResponseController@storageQuote");
 Route::post("quotitacion/response/{id}","QuoteResponseController@storageDetails");
 /**registra la Respuesta de cotizacion de la empresa*/
 Route::post("quotitacion/response/file/{id}","QuoteResponseController@uploadFile");
+/**devuelve el codigo de una cotizacion en vista empresa */
+Route::get('quotitation/id/{id}',"QuoteResponseController@showCodeQuotation");
+
 
 /**Dado un id de una cotizacion y un id de solicitud de cotizacion, entrega los detalles de esa cotizacion */
 Route::get("quote/{idCo}/{idRe}","QuoteResponseController@show");

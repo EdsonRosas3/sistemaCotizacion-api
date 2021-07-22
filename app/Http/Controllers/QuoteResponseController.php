@@ -369,21 +369,11 @@ class QuoteResponseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function showCodeQuotation($idRequest)
-    { 
-        $codesPrintedQuotes = PrintedQuote::select('id','idQuotation')
-                                        ->where('request_quotitations_id',$idRequest)->get();
-        $codesQuotesWithoutResponse = array();
-        foreach ($codesPrintedQuotes as $key => $code){
-            $idPrintedQuote = $code->id;
-            $idQuotation = $code->idQuotation;
-            $quotation = Quotation::where('printed_quotes_id',$idPrintedQuote)->get();
-            $quotationFound = count($quotation);
-            if($quotationFound==0){
-                array_push($codesQuotesWithoutResponse,$idQuotation);
-            }
-        }                           ;
-        return response()->json($codesQuotesWithoutResponse,200);
+    public function showCodeQuotation($id)
+    {
+        $idQuotation = CompanyCode::where('id', $id)
+                                    ->pluck('idQuotation')->first();          
+        return response()->json($idQuotation,200);
     }
 
     /**
