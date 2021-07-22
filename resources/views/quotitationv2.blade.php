@@ -134,8 +134,8 @@ th {
         <header>
             <div class="contenido">
                 <div class="izquierda title-left">universidad mayor de sam simón facultad de {{$facultad->nameFacultad}} aquisiciones</div>
-                <div class="text-right"><p>Cochabamba-Bolivia</p></div>
-            </div>
+              </div>
+              <div class="text-right"><p>Cochabamba-Bolivia</p><span style="color:red">Nº 000005</span></div>
             <h5 class="title">SOLICITUD DE COTIZACIÓN</h5>
         </header>
         <main class="principal">
