@@ -326,6 +326,7 @@ class UserController extends Controller
      */
     public function showUsersUnitAdministrative($id)
     {
+        $usersList= array();
         $administrativeUnit = AdministrativeUnit::select('id')->where('id',$id)->first();
         $users_per_a = $administrativeUnit->users()
                 ->where(['role_status'=>1,'administrative_unit_status'=>1,'global_status'=>1])
@@ -358,8 +359,9 @@ class UserController extends Controller
              }
              $userP = ['id'=>$user->id,'name'=>$user->name,'lastName'=>$user->lastName,'ci'=>$user->ci,'phone'=>$user->phone,'roles'=>$nameRol];
              $users[$key] = $userP;
+             array_push($usersList,$userP);
         }
-        return response()->json(['users'=>$users], $this-> successStatus);
+        return response()->json(['users'=>$usersList], $this-> successStatus);
     }
     /**
      * Devuelve todos los usuarios pertenecientes a una unidad de gasto *s* c
