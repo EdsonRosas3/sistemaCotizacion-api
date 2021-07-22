@@ -222,4 +222,6 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::post("ua/quotitacion/response/file/uageneral/{id}","QuoteResponseController@uploadFileGeneralUA");
     /**devuelve los codigos de cotizaciones impresas que no han sido respondidas*/
     Route::get("ua/quotitacion/printedQuotesValides/{id}","QuoteResponseController@showCodesQuotationUA");
+    /**devuelve las solicitudes de cotizacion respondidas y sin responder segun la id de solicitud de adquisicion*/
+    Route::get("ua/quotitacion/all/{id}","QuoteResponseController@showAllQuotations");
 });

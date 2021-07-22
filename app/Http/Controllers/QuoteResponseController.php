@@ -88,10 +88,17 @@ class QuoteResponseController extends Controller
             $quotationResponse = $request->only("offerValidity","deliveryTime","paymentMethod","answerDate","observation");
             $codePrintedQuote=  $request->idQuotation;
             $printedQuote = PrintedQuote::where('idQuotation',$codePrintedQuote)->first();
+            $emailBusiness= $printedQuote->email;
+            if($emailBusiness==null){
+                $printedQuote['email'] = $id;
+                $emailBusiness = Business::where('id',$id)->pluck('email')->first();
+                $printedQuote->update(['email' => $emailBusiness]);
+            }
             $quotationResponse["printed_quotes_id"]=  $printedQuote->id;
             $quotationResponse["business_id"] = $id;
             $response['message']="Envio exitoso";
             $quotation = Quotation::create($quotationResponse);
+            
             $response['id'] = $quotation->id;
             return response()->json(["response"=>$response], $this-> successStatus);
         } catch (\Throwable $th) {
@@ -354,6 +361,104 @@ class QuoteResponseController extends Controller
         }                           ;
         return response()->json($codesQuotesWithoutResponse,200);
     }
+
+    /**
+     * devuelve los codigos sin respuesta de las cotizaciones impresas 
+     * segun el id de una solicitud de adquisicion
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showCodeQuotation($idRequest)
+    { 
+        $codesPrintedQuotes = PrintedQuote::select('id','idQuotation')
+                                        ->where('request_quotitations_id',$idRequest)->get();
+        $codesQuotesWithoutResponse = array();
+        foreach ($codesPrintedQuotes as $key => $code){
+            $idPrintedQuote = $code->id;
+            $idQuotation = $code->idQuotation;
+            $quotation = Quotation::where('printed_quotes_id',$idPrintedQuote)->get();
+            $quotationFound = count($quotation);
+            if($quotationFound==0){
+                array_push($codesQuotesWithoutResponse,$idQuotation);
+            }
+        }                           ;
+        return response()->json($codesQuotesWithoutResponse,200);
+    }
+
+    /**
+     * devuelve los solicitudes de cotizacion respondidas y sin responder 
+     * segun el id de una solicitud de adquisicion
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showAllQuotations($idRequest)
+    {
+        $printedQuotes = PrintedQuote::where('request_quotitations_id',$idRequest)->get();
+        $emailQuotes = CompanyCode::where('request_quotitations_id',$idRequest)->get();
+        $table = array();
+        $resp = array();
+        $quote_print=0;
+        $quote_email=0;
+        $quote_resp=0;
+        $contpr = count($printedQuotes);
+        $contem = count($emailQuotes);
+        if($contpr>0){
+            foreach ($printedQuotes as $kpq => $pq){
+                $idPrintedQuote = $pq->id;
+                $idQuotation = $pq->idQuotation;
+                $quotation = Quotation::where('printed_quotes_id',$idPrintedQuote)->get();
+                $valor = count($quotation);
+                if($valor==1){
+                    $quote=$quotation[0];
+                    $answerDate = $quote->answerDate;
+                    $idBusiness = $quote->business_id;
+                    $nameBusiness = Business::where('id',$idBusiness)->pluck('nameEmpresa')->first();
+                    $fila = ['idQuotation'=>$idQuotation,'business'=>$nameBusiness,'typeQuotation'=>'Impresa','answerDate'=>$answerDate];
+                    array_push($table,$fila);
+                    $quote_resp++;
+                }
+                else{
+                    if($valor==0){
+                        $emailBusiness = $pq->email;
+                        $nameBusiness = Business::where('email',$emailBusiness)->pluck('nameEmpresa')->first();
+                        $fila = ['idQuotation'=>$idQuotation,'business'=>$nameBusiness,'typeQuotation'=>'Impresa','answerDate'=>'Sin respuesta'];
+                        array_push($table,$fila);
+                    }
+                }
+                $quote_print++; 
+            }
+        }
+        if($contem>0){
+            foreach ($emailQuotes as $keq => $eq){
+                $idEmailQuote = $eq->id;
+                $idQuotation = $eq->idQuotation;
+                $quotation = Quotation::where('company_codes_id',$idEmailQuote)->get();
+                $valor = count($quotation);
+                if($valor==1){
+                    $quote=$quotation[0];
+                    $answerDate = $quote->answerDate;
+                    $idBusiness = $quote->business_id;
+                    $nameBusiness = Business::where('id',$idBusiness)->pluck('nameEmpresa')->first();
+                    $fila = ['idQuotation'=>$idQuotation,'business'=>$nameBusiness,'typeQuotation'=>'Correo','answerDate'=>$answerDate];
+                    array_push($table,$fila);
+                    $quote_resp++;
+                }
+                else{
+                    if($valor==0){
+                        $emailBusiness = $eq->email;
+                        $nameBusiness = Business::where('email',$emailBusiness)->pluck('nameEmpresa')->first();
+                        $fila = ['idQuotation'=>$idQuotation,'business'=>$nameBusiness,'typeQuotation'=>'Correo','answerDate'=>'Sin respuesta'];
+                        array_push($table,$fila);
+                    }
+                }
+                $quote_email++;
+            }
+        }
+        $resp = ['quote_print'=>$quote_print,'quote_email'=>$quote_email, 'quote_resp'=>$quote_resp ,'table'=>$table];
+                                  
+        return response()->json($resp,200);
+    }
+
 
     /**
      * Update the specified resource in storage.
