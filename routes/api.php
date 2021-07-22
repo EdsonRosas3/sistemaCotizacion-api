@@ -48,7 +48,8 @@ Route::get("showFile/{id}/{namefile}", "RequestQuotitationController@showFile");
 Route::get('files/{id}', 'RequestQuotitationController@showFiles');
 /**devuleve el pdf de la solicitud */
 Route::get('requestquotitationpdf','PDFQuotitationController@requestquotitationPDF');
-
+/**devuleve el pdf de la solicitud con pasar id cotizacion y id de empresa*/
+Route::get('v2requestquotitationpdf/{id}/{bussines}','PDFQuotitationController@requestquotitationPDFV2');
 /*ARCHIVOS DE COTIZACION */
 /**nombre de archivo del detalle de una cotizacion */
 Route::get('quotation/files/detail/{idDetailOffert}', 'QuoteResponseController@showNameFilesDetailsBusiness');
