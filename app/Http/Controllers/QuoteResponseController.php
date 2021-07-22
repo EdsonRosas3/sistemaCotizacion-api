@@ -192,12 +192,13 @@ class QuoteResponseController extends Controller
         //sacar nombres de empresa, numero de items cotizados, el total de todos los items cotizados
         $lista = array();
         $codesCompany = CompanyCode::where('request_quotitations_id',$idReq)->get();
+        return response()->json(['Cotizaciones'=>$codesCompany], $this-> successStatus);
         
         foreach($codesCompany as $key => $codeCompany)
         {
             $idCode = $codeCompany->id;
             $quotations = Quotation::where('company_codes_id',$idCode)->get();
-            
+
             foreach($quotations as $key2 => $quotation)
             {       
                 $idQuo = $quotation->id;
@@ -385,6 +386,22 @@ class QuoteResponseController extends Controller
         return response()->json($codesQuotesWithoutResponse,200);
     }
 
+    /**
+     * devuelve true si la cotizacion almenos a sido enviada o impresa una vez,
+     * caso contrario devuelve false
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function verifyRequestQuotation($idRequest)
+    {
+        $printedQuotes = PrintedQuote::where('request_quotitations_id',$idRequest)->first();
+        $emailQuotes = CompanyCode::where('request_quotitations_id',$idRequest)->first();
+        $verify = false;
+        if($printedQuotes!=null || $emailQuotes!=null ){
+            $verify= true;
+        } 
+        return response()->json(["response"=>$verify],200);
+    }
     /**
      * devuelve los solicitudes de cotizacion respondidas y sin responder 
      * segun el id de una solicitud de adquisicion

@@ -13,6 +13,8 @@ use App\LimiteAmount;
 use App\AdministrativeUnit;
 use App\Faculty;
 use App\Report;
+use App\CompanyCode;
+use App\PrintedQuote;
 use Validator;
 use Illuminate\Support\Facades\Storage;
 
@@ -307,6 +309,14 @@ class RequestQuotitationController extends Controller
             else{
                 $requestQuotitation['statusReport'] = false;
             }
+            
+            $printedQuotes = PrintedQuote::where('request_quotitations_id',$id_requestQuotitation)->first();
+            $emailQuotes = CompanyCode::where('request_quotitations_id',$id_requestQuotitation)->first();
+            $verify = false;
+            if($printedQuotes!=null || $emailQuotes!=null ){
+                $verify= true;
+            }
+            $requestQuotitation["verify"] = $verify;
             $requestQuotitationsAdmin[$key] = $requestQuotitation;
         }
 

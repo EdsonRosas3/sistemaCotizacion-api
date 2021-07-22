@@ -225,3 +225,5 @@ Route::group(['middleware' => 'auth:api'], function(){
     /**devuelve las solicitudes de cotizacion respondidas y sin responder segun la id de solicitud de adquisicion*/
     Route::get("ua/quotitacion/all/{id}","QuoteResponseController@showAllQuotations");
 });
+/*devuelve true si la cotizacion almenos a sido enviada o impresa una vez,caso contrario devuelve false*/
+Route::get("ua/quotitacion/verify/{id}","QuoteResponseController@verifyRequestQuotation");

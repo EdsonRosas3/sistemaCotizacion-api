@@ -62,7 +62,7 @@ class EmailController extends Controller
             }
             $input['idQuotation']=$codQuotation;
             CompanyCode::create($input);
-            Mail::to($email)->send(new EmailModel($request));
+            //Mail::to($email)->send(new EmailModel($request));
             }
             return response()->json(['result'=>"El mensaje ha sido enviado exitosamente!"],200); 
     }
