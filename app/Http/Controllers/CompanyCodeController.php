@@ -22,13 +22,19 @@ class CompanyCodeController extends Controller
         $valor = count($companyCode);
         if($valor==1){
             $company = $companyCode[0];
-            $company['status']=true;
-            $empresa = Business::where('email',$company->email)->get();
-           $existeEmpresa = count($empresa);
-           if($existeEmpresa>0){
-               $company['empresa']= $empresa[0];
-           }
-            return response()->json($company, 200); 
+            if($company->status == 0){
+                $company['status']=true;
+                $empresa = Business::where('email',$company->email)->get();
+                $existeEmpresa = count($empresa);
+                if($existeEmpresa>0){
+                    $company['empresa']= $empresa[0];
+                }
+                CompanyCode::where('id', $company->id)->update(array('status' =>1));
+                return response()->json($company, 200); 
+            }else{
+                $companyCode['status']=false;
+                return response()->json($companyCode, 200);
+            }
         }else{
             $companyCode['status']=false;
             return response()->json($companyCode, 200);

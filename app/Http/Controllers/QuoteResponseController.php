@@ -192,11 +192,11 @@ class QuoteResponseController extends Controller
         //sacar nombres de empresa, numero de items cotizados, el total de todos los items cotizados
         $lista = array();
         $codesCompany = CompanyCode::where('request_quotitations_id',$idReq)->get();
-        return response()->json(['Cotizaciones'=>$codesCompany], $this-> successStatus);
         
         foreach($codesCompany as $key => $codeCompany)
         {
             $idCode = $codeCompany->id;
+            $idQuotation = $codeCompany->idQuotation;
             $quotations = Quotation::where('company_codes_id',$idCode)->get();
 
             foreach($quotations as $key2 => $quotation)
@@ -216,7 +216,37 @@ class QuoteResponseController extends Controller
                 }
                 $res['ItemsCotizados'] = $nroDetails;
                 $res['TotalEnBs'] = $totals;
-                $res['idCotizacion'] = $idQuo;
+                $res['idCotizacion'] = $idQuotation;
+                $lista[] = $res;
+                    
+            }
+        }
+        $printedQuotes = PrintedQuote::where('request_quotitations_id',$idReq)->get();
+        
+        foreach($printedQuotes as $key => $printed)
+        {
+            $idCode = $printed->id;
+            $idQuotation = $printed->idQuotation;
+            $quotations = Quotation::where('printed_quotes_id',$idCode)->get();
+
+            foreach($quotations as $key2 => $quotation)
+            {       
+                $idQuo = $quotation->id;
+                $idEmpresa = $quotation->business_id;
+                $empresa = Business::select('nameEmpresa')->where('id','=',$idEmpresa)->get();
+                $res['Empresa'] = $empresa[0]->nameEmpresa;
+                $prices = Detail::select('totalPrice')->where('quotations_id',$idQuo)->get();
+                $nroDetails = count($prices);
+                $totals = 0;
+
+                foreach($prices as $key3 => $price)
+                {
+                    $total = $price->totalPrice;
+                    $totals = $totals + $total;
+                }
+                $res['ItemsCotizados'] = $nroDetails;
+                $res['TotalEnBs'] = $totals;
+                $res['idCotizacion'] = $idQuotation;
                 $lista[] = $res;
                     
             }

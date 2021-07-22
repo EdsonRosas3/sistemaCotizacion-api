@@ -18,6 +18,7 @@ class CreateCompanyCodesTable extends Migration
             $table->integer('idQuotation');
             $table->string("code");
             $table->string("email");
+            $table->integer('status')->default(0);
             $table->foreignId('request_quotitations_id')->constrained();
             $table->timestamps();
         });

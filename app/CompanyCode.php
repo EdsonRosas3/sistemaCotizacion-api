@@ -14,7 +14,7 @@ class CompanyCode extends Model
      * @var array
      */
     protected $fillable = [
-        'code','idQuotation','email','request_quotitations_id'
+        'code','idQuotation','status','email','request_quotitations_id'
     ];
     public function requestQuotitation(){
         return $this->belongsTo(RequestQuotitation::class);
