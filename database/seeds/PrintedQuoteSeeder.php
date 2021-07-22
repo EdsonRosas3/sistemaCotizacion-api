@@ -11,7 +11,7 @@ class PrintedQuoteSeeder extends Seeder
      */
     public function run()
     {
-        $CompanyCode = new PrintedQuote();
+        /* $CompanyCode = new PrintedQuote();
         $CompanyCode->idQuotation=3;
         $CompanyCode->email="smartcube@gmail.com";
         $CompanyCode->request_quotitations_id=1;
@@ -27,7 +27,7 @@ class PrintedQuoteSeeder extends Seeder
         $CompanyCode->idQuotation=5;
         $CompanyCode->email="smartcube@gmail.com";
         $CompanyCode->request_quotitations_id=1;
-        $CompanyCode->save();
+        $CompanyCode->save(); */
 
     }
 }
