@@ -316,7 +316,7 @@ class QuoteResponseController extends Controller
     
     //muestra el archivo de un detalle de la cotizacion
     public function showFilesDetailsBusiness($namefile){
-        $path = public_path('/FilesResponseBusiness\\'.$namefile);
+        $path = public_path('/FilesResponseBusiness/'.$namefile);
         return response()->file($path);
     }
 
@@ -334,7 +334,7 @@ class QuoteResponseController extends Controller
     }
     //muestra el archivo de un detalle de la cotizacion
     public function showFileBusinessManualUA($namefile){
-        $path = public_path('/FilesResponseBusinessUA\\'.$namefile);
+        $path = public_path('/FilesResponseBusinessUA/'.$namefile);
         return response()->file($path);
     }
 

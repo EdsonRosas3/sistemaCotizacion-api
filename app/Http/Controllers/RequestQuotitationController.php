@@ -162,13 +162,13 @@ class RequestQuotitationController extends Controller
         return response()->download(public_path('Files/db.pdf'), "base de datos");
     }
     public function downloadFile($id,$namefile){
-        $path = public_path('FilesAquisicion\\'.$id.'\\'.$namefile);
+        $path = public_path('FilesAquisicion/'.$id.'/'.$namefile);
         //dd($path);
         return response()->download($path);
 
     }
     public function showFile($id,$namefile){
-        $path = public_path('FilesAquisicion\\'.$id.'\\'.$namefile);
+        $path = public_path('FilesAquisicion/'.$id.'/'.$namefile);
         //dd($path);
         return response()->file($path);
     }
