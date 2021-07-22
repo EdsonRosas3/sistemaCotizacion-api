@@ -15,6 +15,7 @@ class LimiteAmountSeeder extends Seeder
         $LimiteAmount= new LimiteAmount();
         $LimiteAmount->monto=10000;
         $LimiteAmount->starDate="2021-01-01";
+        $LimiteAmount->endDate="2021-01-01";
         $LimiteAmount->steps="2021";
         $LimiteAmount->administrative_units_id=1;
         $LimiteAmount->save();
@@ -22,6 +23,7 @@ class LimiteAmountSeeder extends Seeder
         $LimiteAmount2= new LimiteAmount();
         $LimiteAmount2->monto=11000;
         $LimiteAmount2->starDate="2021-01-01";
+        $LimiteAmount2->endDate="2021-03-01";
         $LimiteAmount2->steps="2021";
         $LimiteAmount2->administrative_units_id=3;
         $LimiteAmount2->save();
@@ -29,6 +31,7 @@ class LimiteAmountSeeder extends Seeder
         $LimiteAmount3= new LimiteAmount();
         $LimiteAmount3->monto=13000;
         $LimiteAmount3->starDate="2021-03-01";
+        $LimiteAmount3->endDate="2021-05-01";
         $LimiteAmount3->steps="2021";
         $LimiteAmount3->administrative_units_id=1;
         $LimiteAmount3->save();

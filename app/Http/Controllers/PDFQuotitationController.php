@@ -5,6 +5,8 @@ use App\RequestQuotitation;
 use App\RequestDetail;
 use App\AdministrativeUnit;
 use App\Faculty;
+use App\PrintedQuote;
+use App\CompanyCode;
 use Barryvdh\DomPDF\Facade as PDF;
 //use PDF;
 class PDFQuotitationController extends Controller
@@ -16,8 +18,12 @@ class PDFQuotitationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function requestquotitationPDF($id)
+    public function requestquotitationPDF(Request $request)
     {
+        //recibe:
+        //request_quotitations_id
+        //business (nombre de la empresa)
+        $id = $request->only('request_quotitations_id');
         $idAdministrative = RequestQuotitation::where('id',$id)->pluck('administrative_unit_id')->first();
         $idFacultad = AdministrativeUnit::where('id',$idAdministrative)->pluck('faculties_id')->first();
         $facultad = Faculty::find($idFacultad);
@@ -26,13 +32,56 @@ class PDFQuotitationController extends Controller
         foreach ($detailsQuotitations as $key => $detail) {
             array_push($details,$detail);
         }
-        $data=[
-            'details'=>$details,
-            'facultad'=>$facultad
-        ];
-        $pdf = PDF::loadView('quotitationv2',$data);
-        //dd($pdf);
-        //return $pdf->download('Postulantes.pdf');
+
+        //crear codigo de solicitud de cotizacion
+        $codQuotation=0;
+        $lastPrintedQuote = PrintedQuote::pluck('idQuotation')->last();
+        $lastEmailQuote = CompanyCode::pluck('idQuotation')->last();
+        if($lastPrintedQuote!=null && $lastEmailQuote!=null){
+            if($lastPrintedQuote>$lastEmailQuote){
+                $codQuotation = $lastPrintedQuote+1;
+            }
+            else{
+                $codQuotation = $lastEmailQuote+1;
+            }
+        }
+        else{
+            if($lastPrintedQuote==null && $lastEmailQuote==null){
+                $codQuotation=1;
+            }
+            else{
+                if($lastEmailQuote==null){
+                    $codQuotation = $lastPrintedQuote+1;
+                }
+                else{
+                    $codQuotation = $lastEmailQuote+1;
+                }
+            }
+        }
+        $empresa=$request->business;
+        //enviar datos al pdf
+        if($empresa!=null){
+            $requestPrintedQuote = ['idQuotation'=>$codQuotation,'business'=>$request->business,'request_quotitations_id'=>$request->request_quotitations_id];
+            $printedQuote = PrintedQuote::create($requestPrintedQuote);
+            $data=[
+                'details'=>$details,
+                'facultad'=>$facultad,
+                'codigo'=>$codQuotation,
+                'empresa'=>$empresa
+            ];
+            $pdf = PDF::loadView('quotitationv2',$data);
+        }
+        else{
+            $requestPrintedQuote = ['idQuotation'=>$codQuotation,'request_quotitations_id'=>$request->request_quotitations_id];
+            $printedQuote = PrintedQuote::create($requestPrintedQuote);
+            $data=[
+                'details'=>$details,
+                'facultad'=>$facultad,
+                'codigo'=>$codQuotation,
+                'empresa'=>""
+            ];
+            $pdf = PDF::loadView('quotitationv2',$data);
+        }
         return $pdf->setPaper('a4', 'landscape')->stream('quotitation.pdf');
     }
     /**

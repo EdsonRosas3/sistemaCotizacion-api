@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use App\Mail\EmailModel;
 use App\CompanyCode;
+use App\PrintedQuote;
 
 class EmailController extends Controller
 {
@@ -35,9 +36,35 @@ class EmailController extends Controller
             $request['code']=$input['code'];
             $request['link']="http://127.0.0.1:3000/ingresoCodigo";
             Mail::to($email)->send(new EmailModel($request));
+            //crear codigo de solicitud de cotizacion
+            $codQuotation=0;
+            $lastPrintedQuote = PrintedQuote::pluck('idQuotation')->last();
+            $lastEmailQuote = CompanyCode::pluck('idQuotation')->last();
+            if($lastPrintedQuote!=null && $lastEmailQuote!=null){
+                if($lastPrintedQuote>$lastEmailQuote){
+                    $codQuotation = $lastPrintedQuote+1;
+                }
+                else{
+                    $codQuotation = $lastEmailQuote+1;
+                }
+            }
+            else{
+                if($lastPrintedQuote==null && $lastEmailQuote==null){
+                    $codQuotation=1;
+                }
+                else{
+                    if($lastEmailQuote==null){
+                        $codQuotation = $lastPrintedQuote+1;
+                    }
+                    else{
+                        $codQuotation = $lastEmailQuote+1;
+                    }
+                }
+            }
+            $input['idQuotation']=$codQuotation;
             CompanyCode::create($input);
-        }
-        return response()->json(['result'=>"El mensaje ha sido enviado exitosamente!"],200); 
+            }
+            return response()->json(['result'=>"El mensaje ha sido enviado exitosamente!"],200); 
     }
 
     /**

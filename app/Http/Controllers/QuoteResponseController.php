@@ -10,6 +10,7 @@ use App\Detail;
 use App\RequestDetail;
 use App\Business;
 use App\CompanyCode;
+use App\PrintedQuote;
 
 class QuoteResponseController extends Controller
 {
@@ -331,6 +332,29 @@ class QuoteResponseController extends Controller
             closedir($handler);
         }
         return $listDir;
+    }
+
+    /**
+     * devuelve los codigos sin respuesta de las cotizaciones impresas 
+     * segun el id de una solicitud de adquisicion
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showCodesQuotationUA($idRequest)
+    { 
+        $codesPrintedQuotes = PrintedQuote::select('id','idQuotation')
+                                        ->where('request_quotitations_id',$idRequest)->get();
+        $codesQuotesWithoutResponse = array();
+        foreach ($codesPrintedQuotes as $key => $code){
+            $idPrintedQuote = $code->id;
+            $idQuotation = $code->idQuotation;
+            $quotation = Quotation::where('id',$idPrintedQuote)->get();
+            $quotationFound = count($quotation);
+            if($quotationFound==0){
+                array_push($codesQuotesWithoutResponse,$idQuotation);
+            }
+        }                           ;
+        return response()->json($codesQuotesWithoutResponse,200);
     }
 
     /**

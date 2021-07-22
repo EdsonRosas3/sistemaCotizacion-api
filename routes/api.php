@@ -47,7 +47,7 @@ Route::get("showFile/{id}/{namefile}", "RequestQuotitationController@showFile");
 /**nombres de earchivos */
 Route::get('files/{id}', 'RequestQuotitationController@showFiles');
 /**devuleve el pdf de la solicitud */
-Route::get('requestquotitationpdf/{id}','PDFQuotitationController@requestquotitationPDF');
+Route::get('requestquotitationpdf','PDFQuotitationController@requestquotitationPDF');
 
 /*ARCHIVOS DE COTIZACION */
 /**nombre de archivo del detalle de una cotizacion */
@@ -217,7 +217,8 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::post("ua/quotitacion/response/{id}","QuoteResponseController@storageDetailsUA");
     /**registra la Respuesta de cotizacion de la empresa desde la unidad administrativa*/
     Route::post("ua/quotitacion/response/file/{id}","QuoteResponseController@uploadFileUA");
-    /**registra la Respuesta de cotizacion de la empresa desde la unidad administrativa*/
+    /**registra la Respuesta de cotizacion de la empresa desde la unidad administrativa*/ 
     Route::post("ua/quotitacion/response/file/uageneral/{id}","QuoteResponseController@uploadFileGeneralUA");
-
+    /**devuelve los codigos de cotizaciones impresas que no han sido respondidas*/
+    Route::get("ua/quotitacion/printedQuotesValides/{id}","QuoteResponseController@showCodesQuotationUA");
 });

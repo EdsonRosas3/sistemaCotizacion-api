@@ -6,20 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 use App\RequestQuotitation;
 use App\Quotation;
 
-class CompanyCode extends Model
+class PrintedQuote extends Model
 {
-       /**
+      /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'code','idQuotation','email','request_quotitations_id'
+        'idQuotation','business','request_quotitations_id'
     ];
     public function requestQuotitation(){
         return $this->belongsTo(RequestQuotitation::class);
     }
     public function quotitation(){
-        return $this->belongsTo(Quotation::class);
+        return $this->hasMany(Quotation::class);
     }
 }
