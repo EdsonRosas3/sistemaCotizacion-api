@@ -265,17 +265,49 @@ class QuoteResponseController extends Controller
        $res = array();
 
        $codesCompany = CompanyCode::where('request_quotitations_id',$idRe)->get();
+       $printedQuotes = PrintedQuote::where('request_quotitations_id',$idRe)->get();
        $requesDetails = RequestDetail:: select('id','description','amount')->where('request_quotitations_id',$idRe)->get();
        
        foreach($requesDetails as $key1 => $reDetail)
        {
-           $idDe = $reDetail->id;
-          // $chart[] = $reDetail;
-           $nombreEmpresas = array();
+            $idDe = $reDetail->id;
+            $nombreEmpresas = array();
+
             foreach($codesCompany as $key => $codeCompany)
             {
                 $idCode = $codeCompany->id; 
                 $quotations = Quotation::where('company_codes_id',$idCode)->get();
+
+                foreach($quotations as $key2 => $quotation)
+                {
+                    $idQuo = $quotation->id;
+                    $idEmpresa = $quotation->business_id;
+                    $empresa = Business::select('nameEmpresa')->where('id','=',$idEmpresa)->get();
+                    $list['Empresa'] =$empresa[0]->nameEmpresa;
+                    $nombreEmpresas[]= $empresa[0]->nameEmpresa;
+                    $detail = Detail::select('unitPrice','totalPrice')->where('quotations_id',$idQuo)
+                    ->where('request_details_id',$idDe)->get();
+                    $existDetail = count ($detail);
+                
+                    if($existDetail > 0)
+                    {
+                        $detalle = $detail[0];
+                        $totalPrice = $detalle['totalPrice'];
+                        $list['total'] = $totalPrice;
+                    }
+                    else
+                    {
+                        $list['total'] = null;                        
+                    }
+                    
+                    $chart[] = $list;
+                }
+                    
+            }
+            foreach($printedQuotes as $key => $printed)
+            {
+                $idCode = $printed->id; 
+                $quotations = Quotation::where('printed_quotes_id',$idCode)->get();
 
                 foreach($quotations as $key2 => $quotation)
                 {
@@ -308,8 +340,8 @@ class QuoteResponseController extends Controller
             $chart = null;
             $res[] = $reDetail;
 
-        }    
-        
+        }
+        //Tabla PrintedQuote
         return response()->json(['comparativeChart'=>$res, "businesses"=>$nombreEmpresas], $this-> successStatus);
 
     }
