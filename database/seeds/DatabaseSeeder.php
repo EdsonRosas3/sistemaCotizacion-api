@@ -21,13 +21,14 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
         $this->call(UserSeeder::class);
         $this->call(LimiteAmountSeeder::class);
-        $this->call(RequestQuotationSeeder::class);
+        $this->call(BusinessSeeder::class);
+        /*$this->call(RequestQuotationSeeder::class);
         $this->call(RequestDetailSeeder::class);
         $this->call(ReportSeeder::class);
-        $this->call(BusinessSeeder::class);
+        
         $this->call(CompanyCodeSeeder::class);
         $this->call(PrintedQuoteSeeder::class);
         $this->call(QuotationSeeder::class);
-        $this->call(DetailsSeeder::class);
+        $this->call(DetailsSeeder::class);*/
     }
 }
